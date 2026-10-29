@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useState } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 import { useLocale } from "@/i18n/LocaleContext";
@@ -16,28 +16,13 @@ const OceanScene = dynamic(() => import("./OceanScene"), {
 
 export default function HeroSection() {
   const { t, dir } = useLocale();
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [canRender3D] = useState(() => {
     if (typeof window === "undefined") return false;
     return canRenderOcean();
   });
-  const heroRef = useRef<HTMLElement>(null);
   const { ref: observerRef, isVisible } = useIntersectionObserver<HTMLDivElement>({
     threshold: 0.1,
   });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!heroRef.current) return;
-      const rect = heroRef.current.getBoundingClientRect();
-      const windowHeight = window.innerHeight;
-      const progress = Math.max(0, Math.min(1, -rect.top / windowHeight));
-      setScrollProgress(progress);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -64,26 +49,18 @@ export default function HeroSection() {
 
   return (
     <section
-      ref={heroRef}
-      className="relative min-h-[150vh] overflow-hidden"
+      className="relative h-screen overflow-hidden"
       id="hero"
     >
       <div
         ref={observerRef}
-        className="sticky top-0 h-screen w-full flex items-center justify-center"
+        className="absolute inset-0 w-full h-full flex items-center justify-center"
       >
         {canRender3D ? (
-          <OceanScene scrollProgress={scrollProgress} isVisible={isVisible} />
+          <OceanScene scrollProgress={0} isVisible={isVisible} />
         ) : (
           <OceanFallback />
         )}
-
-        <div className="underwater-gradient absolute inset-0 pointer-events-none" 
-          style={{ 
-            opacity: scrollProgress * 0.8,
-            transition: "opacity 0.1s ease-out"
-          }} 
-        />
 
         <motion.div
           className={cn(
@@ -91,12 +68,8 @@ export default function HeroSection() {
             dir === "rtl" && "font-hebrew"
           )}
           variants={containerVariants}
-          initial="hidden"
+          initial="visible"
           animate="visible"
-          style={{
-            transform: `translateY(${scrollProgress * -100}px)`,
-            opacity: 1 - scrollProgress * 1.5,
-          }}
         >
           <motion.p
             variants={itemVariants}
@@ -160,7 +133,6 @@ export default function HeroSection() {
 
         <div
           className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none z-20"
-          style={{ opacity: Math.min(1, scrollProgress * 2) }}
         />
       </div>
     </section>

@@ -16,6 +16,7 @@ interface Project {
   featured?: boolean;
   color: string;
   icon: string;
+  isPrivate?: boolean;
 }
 
 const projects: Project[] = [
@@ -42,6 +43,7 @@ const projects: Project[] = [
     featured: true,
     color: "#8b5cf6",
     icon: "🛒",
+    isPrivate: true,
   },
   {
     id: "chessapi",
@@ -83,17 +85,23 @@ const projects: Project[] = [
 
 async function fetchGitHubStars(repo: string): Promise<number | null> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    
     const response = await fetch(`https://api.github.com/repos/${repo}`, {
       headers: {
         Accept: "application/vnd.github.v3+json",
       },
-      next: { revalidate: 3600 },
+      signal: controller.signal,
+      cache: "force-cache",
     });
+    
+    clearTimeout(timeoutId);
     
     if (!response.ok) return null;
     
     const data = await response.json();
-    return data.stargazers_count ?? null;
+    return typeof data.stargazers_count === "number" ? data.stargazers_count : null;
   } catch {
     return null;
   }
@@ -115,13 +123,10 @@ function ProjectCard({ project, stars, index }: { project: Project; stars: numbe
         "group relative block rounded-2xl overflow-hidden",
         "bg-surface-elevated border border-border",
         "transition-all duration-500 hover:border-transparent",
-        project.featured ? "col-span-2 row-span-2" : "col-span-1 row-span-1",
-        project.featured ? "min-h-[320px]" : "min-h-[200px]"
+        project.featured ? "col-span-1 sm:col-span-2 lg:col-span-2" : "col-span-1"
       )}
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
+      initial={{ opacity: 1, y: 0 }}
+      animate={{ opacity: 1, y: 0 }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{
@@ -241,8 +246,12 @@ export default function ProjectsSection() {
       
       await Promise.all(
         projects.map(async (project) => {
-          const starCount = await fetchGitHubStars(project.repo);
-          results[project.id] = starCount;
+          if (project.isPrivate) {
+            results[project.id] = null;
+          } else {
+            const starCount = await fetchGitHubStars(project.repo);
+            results[project.id] = starCount;
+          }
         })
       );
       
@@ -252,23 +261,11 @@ export default function ProjectsSection() {
     fetchAllStars();
   }, []);
 
-  const sectionVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" as const },
-    },
-  };
-
   return (
     <section className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8" id="projects">
       <div className="max-w-7xl mx-auto">
-        <motion.div
+        <div
           className={cn("text-center mb-16", dir === "rtl" && "font-hebrew")}
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
         >
           <h2 className="text-4xl sm:text-5xl font-bold mb-4 gradient-text">
             {t.projects.title}
@@ -276,9 +273,9 @@ export default function ProjectsSection() {
           <p className="text-lg sm:text-xl text-text-muted max-w-2xl mx-auto">
             {t.projects.subtitle}
           </p>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-fr">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {projects.map((project, index) => (
             <ProjectCard
               key={project.id}
@@ -290,8 +287,6 @@ export default function ProjectsSection() {
         </div>
       </div>
 
-      <div className="absolute top-1/4 -left-64 w-96 h-96 bg-accent/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 -right-64 w-96 h-96 bg-accent-secondary/5 rounded-full blur-3xl pointer-events-none" />
     </section>
   );
 }

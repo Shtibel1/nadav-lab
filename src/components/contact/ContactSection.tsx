@@ -72,7 +72,7 @@ export default function ContactSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <div className="absolute -inset-4 bg-accent/5 blur-3xl rounded-3xl" />
+          <div className="absolute inset-0 bg-accent/5 blur-3xl rounded-3xl" />
 
           <div className="relative glass rounded-2xl p-8 sm:p-12">
             <div className="flex items-center gap-4 mb-8">
@@ -244,8 +244,6 @@ export default function ContactSection() {
         </motion.div>
       </div>
 
-      <div className="absolute top-1/3 -left-32 w-64 h-64 bg-accent-secondary/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/3 -right-32 w-64 h-64 bg-accent/10 rounded-full blur-3xl pointer-events-none" />
     </section>
   );
 }

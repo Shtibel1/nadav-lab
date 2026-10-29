@@ -34,7 +34,7 @@ function Portfolio() {
   return (
     <>
       <Navigation />
-      <main className="flex-1">
+      <main className="flex-1 overflow-x-clip">
         <HeroSection />
         <div className="section-divider" />
         <TerminalSection />

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useEffect, useMemo } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import { useLocale } from "@/i18n/LocaleContext";
 import { cn } from "@/lib/utils";
 
@@ -159,14 +159,6 @@ function ShaderBackground() {
 export default function TimelineSection() {
   const { t, dir } = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start end", "end start"],
-  });
-
-  const y = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0]);
 
   const categories = useMemo(() => {
     const grouped = techStack.reduce((acc, tech) => {
@@ -194,9 +186,8 @@ export default function TimelineSection() {
     >
       <ShaderBackground />
 
-      <motion.div
+      <div
         className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8"
-        style={{ y, opacity }}
       >
         <div className={cn("text-center mb-16", dir === "rtl" && "font-hebrew")}>
           <motion.h2
@@ -247,7 +238,7 @@ export default function TimelineSection() {
             </motion.div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
     </section>

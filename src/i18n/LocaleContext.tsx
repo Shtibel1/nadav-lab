@@ -22,12 +22,6 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     if (saved && (saved === "he" || saved === "en")) {
       // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional hydration from localStorage
       setLocaleState(saved);
-    } else {
-      const browserLang = navigator.language.toLowerCase();
-      if (browserLang.startsWith("en")) {
-        // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional hydration from browser settings
-        setLocaleState("en");
-      }
     }
   }, []);
 

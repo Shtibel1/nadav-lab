@@ -57,16 +57,21 @@ const agentRuns: TerminalLine[][] = [
 ];
 
 function TerminalWindow({ lines, isActive }: { lines: TerminalLine[]; isActive: boolean }) {
-  const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [displayedLines, setDisplayedLines] = useState<TerminalLine[]>(lines);
+  const [currentIndex, setCurrentIndex] = useState(lines.length);
   const [isTyping, setIsTyping] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hasInitialized = useRef(false);
 
   useEffect(() => {
+    if (!hasInitialized.current) {
+      hasInitialized.current = true;
+      setDisplayedLines(lines);
+      setCurrentIndex(lines.length);
+      return;
+    }
+    
     if (!isActive) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional reset on deactivation
-      setDisplayedLines([]);
-      setCurrentIndex(0);
       return;
     }
 
@@ -74,7 +79,7 @@ function TerminalWindow({ lines, isActive }: { lines: TerminalLine[]; isActive: 
       const resetTimeout = setTimeout(() => {
         setDisplayedLines([]);
         setCurrentIndex(0);
-      }, 3000);
+      }, 4000);
       return () => clearTimeout(resetTimeout);
     }
 
@@ -106,7 +111,7 @@ function TerminalWindow({ lines, isActive }: { lines: TerminalLine[]; isActive: 
         <span className="text-sm text-text-muted font-mono ml-2">agent-terminal</span>
       </div>
 
-      <div className="p-4 font-mono text-sm h-[320px] overflow-hidden bg-[#0d0d14]">
+      <div className="p-4 font-mono text-sm min-h-[280px] overflow-hidden bg-[#0d0d14]">
         {displayedLines.map((line, index) => (
           <motion.div
             key={index}
@@ -187,7 +192,7 @@ export default function TerminalSection() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <div className="absolute -inset-4 bg-accent/5 blur-3xl rounded-3xl" />
+          <div className="absolute inset-0 bg-accent/5 blur-3xl rounded-3xl" />
           
           <TerminalWindow
             lines={agentRuns[activeRunIndex]}

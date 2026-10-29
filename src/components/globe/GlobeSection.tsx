@@ -65,12 +65,12 @@ export default function GlobeSection() {
       phi: focusPhi,
       theta: focusTheta - 0.3,
       dark: 1,
-      diffuse: 1.2,
+      diffuse: 3,
       mapSamples: 16000,
-      mapBrightness: 6,
-      baseColor: [0.1, 0.1, 0.15],
-      markerColor: [0.96, 0.65, 0.14],
-      glowColor: [0.15, 0.2, 0.35],
+      mapBrightness: 12,
+      baseColor: [0.2, 0.2, 0.3],
+      markerColor: [1, 0.8, 0.2],
+      glowColor: [0.3, 0.4, 0.8],
       markers,
       onRender: (state: { phi: number; width: number; height: number }) => {
         if (!pointerInteracting.current) {
@@ -157,17 +157,14 @@ export default function GlobeSection() {
 
         <div className="flex flex-col lg:flex-row items-center gap-12">
           <motion.div
-            className="relative w-full max-w-lg aspect-square"
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            style={{ minWidth: "300px", minHeight: "300px" }}
+            className="relative w-full max-w-md aspect-square mx-auto lg:mx-0 flex-shrink-0"
+            initial={{ opacity: 1, scale: 1 }}
+            animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="absolute inset-0 bg-accent/5 blur-3xl rounded-full" />
+            <div className="absolute inset-4 bg-accent/20 blur-3xl rounded-full" />
             <canvas
               ref={canvasRef}
-              className="w-full h-full cursor-grab"
+              className="w-full h-full cursor-grab relative z-10"
               style={{ 
                 contain: "layout paint size",
                 width: "100%",
@@ -176,14 +173,10 @@ export default function GlobeSection() {
             />
           </motion.div>
 
-          <motion.div
-            className="flex-1 space-y-4"
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
+          <div
+            className="w-full lg:w-auto lg:flex-1"
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {AWS_REGIONS.map((region, index) => (
                 <motion.div
                   key={region.region}
@@ -204,8 +197,8 @@ export default function GlobeSection() {
               ))}
             </div>
 
-            <div className="glass rounded-lg p-4 mt-6">
-              <div className="flex items-center gap-3 mb-3">
+            <div className="glass rounded-lg p-4 mt-4">
+              <div className="flex items-center gap-3 mb-2">
                 <div className="w-3 h-3 rounded-full bg-gold" />
                 <span className={cn("font-medium", dir === "rtl" && "font-hebrew")}>
                   {dir === "rtl" ? "מיקום מרכזי: ישראל" : "Central Location: Israel"}
@@ -218,7 +211,7 @@ export default function GlobeSection() {
                 }
               </p>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
