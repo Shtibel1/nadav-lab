@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+@source "../**/*.{js,ts,jsx,tsx,mdx}";
+@source "../../components/**/*.{js,ts,jsx,tsx,mdx}";
+
+@theme {
+  --color-background: #0a0a0f;
+  --color-foreground: #f0f0f5;
+  --color-accent: #3b82f6;
+  --color-accent-secondary: #8b5cf6;
+  --color-surface: #13131a;
+  --color-surface-elevated: #1a1a24;
+  --color-border: #2a2a3a;
+  --color-text-muted: #8888a0;
+  --color-gold: #f5a623;
+  --color-ocean-deep: #0a1628;
+  --color-ocean-light: #1a3a5c;
+}
+
 :root {
   --background: #0a0a0f;
   --foreground: #f0f0f5;
@@ -12,18 +29,6 @@
   --gold: #f5a623;
   --ocean-deep: #0a1628;
   --ocean-light: #1a3a5c;
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-accent: var(--accent);
-  --color-accent-secondary: var(--accent-secondary);
-  --color-surface: var(--surface);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-border: var(--border);
-  --color-text-muted: var(--text-muted);
-  --color-gold: var(--gold);
-  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
-  --font-hebrew: "Heebo", "Assistant", system-ui, sans-serif;
 }
 
 * {
@@ -60,13 +65,12 @@ html.lenis body {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
   overflow-x: hidden;
   min-height: 100vh;
 }
 
 [dir="rtl"] body {
-  font-family: var(--font-hebrew);
+  font-family: "Heebo", "Assistant", system-ui, sans-serif;
 }
 
 ::selection {

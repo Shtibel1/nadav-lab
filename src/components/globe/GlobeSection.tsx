@@ -45,10 +45,12 @@ export default function GlobeSection() {
   useEffect(() => {
     if (!canvasRef.current || !isVisible) return;
 
-    let width = 0;
+    const canvas = canvasRef.current;
+    let width = canvas.offsetWidth || 400;
+    
     const onResize = () => {
       if (canvasRef.current) {
-        width = canvasRef.current.offsetWidth;
+        width = canvasRef.current.offsetWidth || 400;
       }
     };
     window.addEventListener("resize", onResize);
@@ -56,8 +58,8 @@ export default function GlobeSection() {
 
     const [focusPhi, focusTheta] = coordsToAngles(ISRAEL_COORDS[0], ISRAEL_COORDS[1]);
 
-    const globe = createGlobe(canvasRef.current, {
-      devicePixelRatio: 2,
+    const globe = createGlobe(canvas, {
+      devicePixelRatio: Math.min(2, window.devicePixelRatio || 1),
       width: width * 2,
       height: width * 2,
       phi: focusPhi,
@@ -108,7 +110,6 @@ export default function GlobeSection() {
       }
     };
 
-    const canvas = canvasRef.current;
     canvas.addEventListener("pointerdown", handlePointerDown);
     canvas.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointerout", handlePointerOut);
@@ -161,12 +162,17 @@ export default function GlobeSection() {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            style={{ minWidth: "300px", minHeight: "300px" }}
           >
             <div className="absolute inset-0 bg-accent/5 blur-3xl rounded-full" />
             <canvas
               ref={canvasRef}
               className="w-full h-full cursor-grab"
-              style={{ contain: "layout paint size" }}
+              style={{ 
+                contain: "layout paint size",
+                width: "100%",
+                height: "100%",
+              }}
             />
           </motion.div>
 

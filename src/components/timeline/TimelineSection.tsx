@@ -19,7 +19,6 @@ const techStack: TechItem[] = [
   { name: "Next.js", icon: "NX", category: "framework", description: "Full-stack React framework", descriptionHe: "פריימוורק Full-stack React" },
   { name: "Node.js", icon: "NO", category: "framework", description: "Server-side JavaScript runtime", descriptionHe: "סביבת JavaScript בצד שרת" },
   { name: "React", icon: "RE", category: "framework", description: "Component-based UI library", descriptionHe: "ספריית UI מבוססת קומפוננטות" },
-  { name: "Three.js", icon: "3D", category: "tool", description: "3D graphics and WebGL", descriptionHe: "גרפיקה תלת מימדית ו-WebGL" },
   { name: "Docker", icon: "DK", category: "tool", description: "Containerization and orchestration", descriptionHe: "קונטיינרים ואורקסטרציה" },
   { name: "AWS", icon: "AW", category: "cloud", description: "Cloud infrastructure and services", descriptionHe: "תשתית ושירותי ענן" },
   { name: "PostgreSQL", icon: "PG", category: "tool", description: "Relational database", descriptionHe: "בסיס נתונים רלציוני" },
@@ -190,7 +189,7 @@ export default function TimelineSection() {
   return (
     <section
       ref={containerRef}
-      className="relative min-h-screen py-24 sm:py-32 overflow-hidden"
+      className="relative py-24 sm:py-32 overflow-hidden"
       id="timeline"
     >
       <ShaderBackground />

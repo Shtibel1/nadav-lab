@@ -65,7 +65,7 @@ export default function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[200vh] overflow-hidden"
+      className="relative min-h-[150vh] overflow-hidden"
       id="hero"
     >
       <div

@@ -1,16 +1,13 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  reactStrictMode: true,
+  output: "export",
   
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "avatars.githubusercontent.com",
-      },
-    ],
+    unoptimized: true,
   },
+
+  reactStrictMode: true,
 
   transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
   

@@ -141,11 +141,11 @@ function ProjectCard({ project, stars, index }: { project: Project; stars: numbe
       />
 
       <div className={cn("relative h-full p-6 flex flex-col", dir === "rtl" && "font-hebrew")}>
-        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-4">
           <span className="text-3xl">{project.icon}</span>
           
           <div className="flex items-center gap-3">
-            {stars !== null && (
+            {stars !== null && stars > 0 && (
               <div className="flex items-center gap-1 text-sm text-text-muted">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
