@@ -1,0 +1,96 @@
+# Third-Party Licenses
+
+This project uses the following open-source libraries. Their licenses are included below.
+
+---
+
+## Three.js
+- Source: https://github.com/mrdoob/three.js
+- License: MIT
+- Copyright © 2010-2024 three.js authors
+
+## React Three Fiber (@react-three/fiber)
+- Source: https://github.com/pmndrs/react-three-fiber
+- License: MIT
+- Copyright © 2019 Paul Henschel
+
+## React Three Drei (@react-three/drei)
+- Source: https://github.com/pmndrs/drei
+- License: MIT
+- Copyright © 2020 Paul Henschel
+
+## Framer Motion
+- Source: https://github.com/framer/motion
+- License: MIT
+- Copyright © 2018 Framer B.V.
+
+## Lenis
+- Source: https://github.com/darkroomengineering/lenis
+- License: MIT
+- Copyright © 2022 darkroom.engineering
+
+## GSAP (GreenSock Animation Platform)
+- Source: https://github.com/greensock/GSAP
+- License: Standard License (Free for non-commercial use)
+- Note: GSAP is free to use in most projects. See https://greensock.com/licensing/
+
+## Cobe Globe
+- Source: https://github.com/shuding/cobe
+- License: MIT
+- Copyright © 2021 Shu Ding
+
+## Next.js
+- Source: https://github.com/vercel/next.js
+- License: MIT
+- Copyright © 2024 Vercel, Inc.
+
+## Tailwind CSS
+- Source: https://github.com/tailwindlabs/tailwindcss
+- License: MIT
+- Copyright © Tailwind Labs, Inc.
+
+## clsx
+- Source: https://github.com/lukeed/clsx
+- License: MIT
+- Copyright © Luke Edwards
+
+## tailwind-merge
+- Source: https://github.com/dcastil/tailwind-merge
+- License: MIT
+- Copyright © 2021 Dany Castillo
+
+---
+
+## MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+## Ocean Shader Inspiration
+
+The ocean surface rendering draws inspiration from various open-source WebGL water
+implementations, including:
+
+- Ultra Water by Humpalumps (MIT License)
+  https://github.com/Humpalumps/Ultra-Water
+  Copyright © 2026 Humpalumps
+
+The shader implementation in this project has been substantially rewritten and
+customized for this portfolio's specific visual requirements.

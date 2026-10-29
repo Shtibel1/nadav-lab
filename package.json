@@ -1,0 +1,40 @@
+{
+  "name": "nadav-lab",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Interactive engineering portfolio — real-time 3D ocean, agent terminal, project showcase",
+  "author": "Nadav Shtibel <nadavshtibel@gmail.com>",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@types/three": "^0.186.0",
+    "clsx": "^2.1.1",
+    "cobe": "^2.0.1",
+    "framer-motion": "^14.8.0",
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27",
+    "next": "16.4.3",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tailwind-merge": "^3.7.0",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.3",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
