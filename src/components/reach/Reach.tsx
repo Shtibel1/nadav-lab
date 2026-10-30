@@ -72,14 +72,14 @@ export default function Reach() {
           </div>
 
           <div className="order-2 col-span-12 lg:order-1 lg:col-span-5" data-reveal style={{ "--d": "120ms" } as React.CSSProperties}>
-            <div className="label grid grid-cols-[1fr_auto_auto] gap-x-6 border-b border-line-strong pb-3 text-fog">
+            <div className="label grid grid-cols-[1fr_auto_auto] gap-x-4 sm:gap-x-6 border-b border-line-strong pb-3 text-fog">
               <span>{t.reach.region}</span>
               <span className="w-20 whitespace-nowrap text-end">{t.reach.distance}</span>
               <span className="w-16 whitespace-nowrap text-end">{t.reach.rtt}</span>
             </div>
-            <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-6 border-b border-line py-4">
-              <span className="flex items-baseline gap-3">
-                <span className="mono text-[0.8125rem] text-signal" dir="ltr">
+            <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 sm:gap-x-6 border-b border-line py-4">
+              <span className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+                <span className="mono self-start text-[0.75rem] text-signal sm:w-[8.5rem] sm:shrink-0 sm:self-auto sm:text-[0.8125rem]" dir="ltr">
                   {origin.code}
                 </span>
                 <span className="text-bone">{origin.city[locale]}</span>
@@ -98,15 +98,21 @@ export default function Reach() {
                       onClick={() => focus(i)}
                       aria-pressed={on}
                       className={cn(
-                        "spec-row grid w-full grid-cols-[1fr_auto_auto] items-center gap-x-6 border-b border-line py-3.5 text-start transition-colors duration-500",
+                        "spec-row grid w-full grid-cols-[1fr_auto_auto] items-center gap-x-4 sm:gap-x-6 border-b border-line py-3.5 text-start transition-colors duration-500",
                         on ? "text-bone" : "text-mist hover:text-bone",
                       )}
                     >
-                      <span className="flex min-w-0 items-baseline gap-3">
-                        <span className={cn("mono w-[8.5rem] shrink-0 text-[0.8125rem] transition-colors", on ? "text-signal" : "text-fog")} dir="ltr">
+                      <span className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+                        <span
+                          className={cn(
+                            "mono self-start text-[0.75rem] transition-colors sm:w-[8.5rem] sm:shrink-0 sm:self-auto sm:text-[0.8125rem]",
+                            on ? "text-signal" : "text-fog",
+                          )}
+                          dir="ltr"
+                        >
                           {r.code}
                         </span>
-                        <span className="truncate">{r.city[locale]}</span>
+                        <span className="truncate text-start">{r.city[locale]}</span>
                       </span>
                       <span className="mono tabular w-20 text-end text-[0.8125rem]">
                         {formatNumber(r.km, locale)}
