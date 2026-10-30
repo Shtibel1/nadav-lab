@@ -8,19 +8,20 @@ const instrument = Instrument_Serif({
   weight: "400",
   style: ["normal", "italic"],
   display: "swap",
+  preload: false,
 });
 
 const frank = Frank_Ruhl_Libre({
   variable: "--font-frank",
   subsets: ["hebrew"],
-  weight: ["300", "400"],
+  weight: "300",
   display: "swap",
 });
 
 const plexHebrew = IBM_Plex_Sans_Hebrew({
   variable: "--font-plex-hebrew",
   subsets: ["hebrew", "latin"],
-  weight: ["300", "400", "500"],
+  weight: ["400", "500"],
   display: "swap",
 });
 

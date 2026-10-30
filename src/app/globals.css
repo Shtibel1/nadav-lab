@@ -188,8 +188,8 @@ html.js [data-reveal="lines"][data-in] .line-mask > span {
 }
 
 .hero-rise {
-  animation: rise 1.4s var(--ease-out-expo) both;
-  animation-delay: calc(120ms + var(--i, 0) * 110ms);
+  animation: rise 1.5s var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
 }
 
 .hero-fade {
@@ -199,7 +199,8 @@ html.js [data-reveal="lines"][data-in] .line-mask > span {
 
 @keyframes rise {
   from {
-    transform: translate3d(0, 104%, 0);
+    transform: translate3d(0, 46%, 0);
+    opacity: 0.12;
   }
 }
 

@@ -1,6 +1,7 @@
 import { createReadStream, existsSync, statSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve } from "node:path";
+import { createGzip } from "node:zlib";
 
 const root = resolve(process.cwd(), "out");
 const port = Number(process.env.PORT ?? 4173);
@@ -17,6 +18,8 @@ const types = {
   ".txt": "text/plain; charset=utf-8",
   ".woff2": "font/woff2",
 };
+
+const compressible = new Set([".html", ".js", ".css", ".svg", ".json", ".txt"]);
 
 if (!existsSync(root)) {
   console.error("No ./out directory. Run `npm run build` first.");
@@ -37,12 +40,17 @@ createServer((req, res) => {
     createReadStream(join(root, "404.html")).pipe(res);
     return;
   }
+  const ext = extname(file);
   const immutable = file.includes(`${join(root, "_next", "static")}`);
+  const gzip = compressible.has(ext) && /\bgzip\b/.test(req.headers["accept-encoding"] ?? "");
   res.writeHead(200, {
-    "content-type": types[extname(file)] ?? "application/octet-stream",
+    "content-type": types[ext] ?? "application/octet-stream",
     "cache-control": immutable ? "public, max-age=31536000, immutable" : "no-cache",
+    vary: "accept-encoding",
+    ...(gzip && { "content-encoding": "gzip" }),
   });
-  createReadStream(file).pipe(res);
+  const stream = createReadStream(file);
+  (gzip ? stream.pipe(createGzip()) : stream).pipe(res);
 }).listen(port, () => {
   console.log(`Serving ./out at http://localhost:${port}`);
 });
