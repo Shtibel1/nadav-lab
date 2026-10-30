@@ -2,18 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: "export",
-  
-  images: {
-    unoptimized: true,
-  },
-
+  images: { unoptimized: true },
   reactStrictMode: true,
-
-  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
-  
-  experimental: {
-    optimizePackageImports: ["framer-motion", "three", "@react-three/fiber", "@react-three/drei"],
-  },
+  poweredByHeader: false,
 };
 
 export default nextConfig;

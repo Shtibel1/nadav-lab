@@ -1,63 +1,84 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Frank_Ruhl_Libre, IBM_Plex_Mono, IBM_Plex_Sans_Hebrew, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
   subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const frank = Frank_Ruhl_Libre({
+  variable: "--font-frank",
+  subsets: ["hebrew"],
+  weight: ["400"],
+  display: "swap",
 });
+
+const plexHebrew = IBM_Plex_Sans_Hebrew({
+  variable: "--font-plex-hebrew",
+  subsets: ["hebrew", "latin"],
+  weight: ["300", "400", "500"],
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  variable: "--font-plex-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  display: "swap",
+  preload: false,
+});
+
+const title = "Nadav Shtibel — Full-Stack Engineer";
+const description =
+  "Nadav Shtibel builds AI agents, MCP tooling, automation, Hebrew-first software and commerce systems that ship to production.";
 
 export const metadata: Metadata = {
-  title: "Nadav Shtibel | Full-Stack Engineer",
-  description: "Full-stack engineer building AI agents, MCP tools, automation, Hebrew tooling, and e-commerce solutions.",
-  keywords: ["full-stack", "developer", "AI", "agents", "MCP", "automation", "TypeScript", "React", "Next.js"],
+  metadataBase: new URL("https://lab.nadav-shtibel.com"),
+  title,
+  description,
   authors: [{ name: "Nadav Shtibel", url: "https://github.com/Shtibel1" }],
   creator: "Nadav Shtibel",
+  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
+    url: "https://lab.nadav-shtibel.com",
     locale: "he_IL",
     alternateLocale: "en_US",
-    title: "Nadav Shtibel | Full-Stack Engineer",
-    description: "Full-stack engineer building AI agents, MCP tools, automation, Hebrew tooling, and e-commerce solutions.",
-    siteName: "Nadav Shtibel Portfolio",
+    title,
+    description,
+    siteName: "Nadav Shtibel",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nadav Shtibel | Full-Stack Engineer",
-    description: "Full-stack engineer building AI agents, MCP tools, automation, Hebrew tooling, and e-commerce solutions.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  twitter: { card: "summary_large_image", title, description },
+  robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5,
-  themeColor: "#0a0a0f",
+  themeColor: "#05080a",
+  colorScheme: "dark",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const bootScript = `document.documentElement.classList.add('js')`;
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
       lang="he"
       dir="rtl"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      className={`${instrument.variable} ${frank.variable} ${plexHebrew.variable} ${plexMono.variable} antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen flex flex-col bg-background text-foreground overflow-x-clip">
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: bootScript }} />
+      </head>
+      <body>
         {children}
+        <div className="grain" aria-hidden="true" />
       </body>
     </html>
   );

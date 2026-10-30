@@ -1,51 +1,66 @@
 "use client";
 
 import { useEffect } from "react";
+import Lenis from "lenis";
 import { LocaleProvider } from "@/i18n/LocaleContext";
-import { useLenis } from "@/hooks/useLenis";
-import Navigation from "@/components/Navigation";
-import HeroSection from "@/components/hero/HeroSection";
-import TerminalSection from "@/components/terminal/TerminalSection";
-import ProjectsSection from "@/components/projects/ProjectsSection";
-import TimelineSection from "@/components/timeline/TimelineSection";
-import GlobeSection from "@/components/globe/GlobeSection";
-import ContactSection from "@/components/contact/ContactSection";
+import { registerLenis } from "@/lib/scroll";
+import { prefersReducedMotion } from "@/lib/utils";
+import Nav from "@/components/Nav";
+import Hero from "@/components/hero/Hero";
+import Work from "@/components/work/Work";
+import Systems from "@/components/systems/Systems";
+import Reach from "@/components/reach/Reach";
+import Stack from "@/components/stack/Stack";
+import Contact from "@/components/contact/Contact";
 import Footer from "@/components/Footer";
 
-function Portfolio() {
-  useLenis();
-
+function useSmoothScroll() {
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const cards = document.querySelectorAll<HTMLElement>("[data-spotlight]");
-      cards.forEach((card) => {
-        const rect = card.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width) * 100;
-        const y = ((e.clientY - rect.top) / rect.height) * 100;
-        card.style.setProperty("--mouse-x", `${x}%`);
-        card.style.setProperty("--mouse-y", `${y}%`);
-      });
+    if (prefersReducedMotion()) return;
+    const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    registerLenis(lenis);
+    let raf = requestAnimationFrame(function loop(time) {
+      lenis.raf(time);
+      raf = requestAnimationFrame(loop);
+    });
+    return () => {
+      cancelAnimationFrame(raf);
+      registerLenis(null);
+      lenis.destroy();
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
   }, []);
+}
 
+function useReveal() {
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.setAttribute("data-in", "");
+          io.unobserve(entry.target);
+        }
+      },
+      { rootMargin: "0px 0px -12% 0px" },
+    );
+    document.querySelectorAll("[data-reveal]:not([data-in])").forEach((el) => io.observe(el));
+    return () => io.disconnect();
+  }, []);
+}
+
+function Site() {
+  useSmoothScroll();
+  useReveal();
   return (
     <>
-      <Navigation />
-      <main className="flex-1 overflow-x-clip">
-        <HeroSection />
-        <div className="section-divider" />
-        <TerminalSection />
-        <div className="section-divider" />
-        <ProjectsSection />
-        <div className="section-divider" />
-        <TimelineSection />
-        <div className="section-divider" />
-        <GlobeSection />
-        <div className="section-divider" />
-        <ContactSection />
+      <Nav />
+      <main>
+        <Hero />
+        <Work />
+        <Systems />
+        <Reach />
+        <Stack />
+        <Contact />
       </main>
       <Footer />
     </>
@@ -55,7 +70,7 @@ function Portfolio() {
 export default function Home() {
   return (
     <LocaleProvider>
-      <Portfolio />
+      <Site />
     </LocaleProvider>
   );
 }

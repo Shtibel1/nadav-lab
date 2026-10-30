@@ -1,16 +1,16 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
-import { type Locale, translations, type Translations } from "./translations";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { translations, type Locale, type Translations } from "./translations";
 
-interface LocaleContextType {
+interface LocaleContextValue {
   locale: Locale;
   setLocale: (locale: Locale) => void;
   t: Translations;
   dir: "rtl" | "ltr";
 }
 
-const LocaleContext = createContext<LocaleContextType | undefined>(undefined);
+const LocaleContext = createContext<LocaleContextValue | null>(null);
 
 const STORAGE_KEY = "nadav-lab-locale";
 
@@ -18,9 +18,9 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>("he");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY) as Locale | null;
-    if (saved && (saved === "he" || saved === "en")) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- Intentional hydration from localStorage
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === "he" || saved === "en") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate the persisted choice after the static Hebrew render
       setLocaleState(saved);
     }
   }, []);
@@ -30,29 +30,21 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.dir = locale === "he" ? "rtl" : "ltr";
   }, [locale]);
 
-  const setLocale = useCallback((newLocale: Locale) => {
-    setLocaleState(newLocale);
-    localStorage.setItem(STORAGE_KEY, newLocale);
+  const setLocale = useCallback((next: Locale) => {
+    setLocaleState(next);
+    localStorage.setItem(STORAGE_KEY, next);
   }, []);
 
-  const value: LocaleContextType = {
-    locale,
-    setLocale,
-    t: translations[locale],
-    dir: locale === "he" ? "rtl" : "ltr",
-  };
-
-  return (
-    <LocaleContext.Provider value={value}>
-      {children}
-    </LocaleContext.Provider>
+  const value = useMemo<LocaleContextValue>(
+    () => ({ locale, setLocale, t: translations[locale], dir: locale === "he" ? "rtl" : "ltr" }),
+    [locale, setLocale],
   );
+
+  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }
 
 export function useLocale() {
-  const context = useContext(LocaleContext);
-  if (context === undefined) {
-    throw new Error("useLocale must be used within a LocaleProvider");
-  }
-  return context;
+  const ctx = useContext(LocaleContext);
+  if (!ctx) throw new Error("useLocale must be used within a LocaleProvider");
+  return ctx;
 }
