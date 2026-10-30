@@ -75,7 +75,7 @@ export default function Reach() {
             <div className="label grid grid-cols-[1fr_auto_auto] gap-x-4 sm:gap-x-6 border-b border-line-strong pb-3 text-fog">
               <span>{t.reach.region}</span>
               <span className="w-20 whitespace-nowrap text-end">{t.reach.distance}</span>
-              <span className="w-16 whitespace-nowrap text-end">{t.reach.rtt}</span>
+              <span className="w-[5.75rem] whitespace-nowrap text-end">{t.reach.rtt}</span>
             </div>
             <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-4 sm:gap-x-6 border-b border-line py-4">
               <span className="flex min-w-0 flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-3">
@@ -118,7 +118,7 @@ export default function Reach() {
                         {formatNumber(r.km, locale)}
                         <span className="ms-1 text-fog">{t.reach.km}</span>
                       </span>
-                      <span className="mono tabular w-16 text-end text-[0.8125rem]">
+                      <span className="mono tabular w-[5.75rem] text-end text-[0.8125rem]">
                         {r.rtt.toFixed(1)}
                         <span className="ms-1 text-fog">{t.reach.ms}</span>
                       </span>

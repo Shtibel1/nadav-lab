@@ -123,6 +123,8 @@ export default function Globe({ active, labels, onInteract }: Props) {
     let raf = 0;
     let visible = false;
     let size = wrapEl.offsetWidth;
+    let wrapLeft = wrapEl.getBoundingClientRect().left;
+    let viewport = document.documentElement.clientWidth;
     const start = anglesFor(midpoint(origin.coords, regions[activeRef.current].coords));
     const view = { phi: start.phi, theta: start.theta, vPhi: 0, vTheta: 0 };
     const drag = { on: false, x: 0, y: 0, last: 0, idleUntil: 0 };
@@ -133,9 +135,18 @@ export default function Globe({ active, labels, onInteract }: Props) {
       el.style.transform = `translate3d(${(p.x * size).toFixed(1)}px, ${(p.y * size).toFixed(1)}px, 0)`;
       el.style.opacity = p.front ? "1" : "0";
       const tag = el.querySelector<HTMLElement>(".gl-text");
-      const room = size - p.x * size - (tag ? tag.offsetWidth + 28 : 0);
-      if (room < 0) el.dataset.flip = "";
-      else if (room > 24) delete el.dataset.flip;
+      if (!tag) return;
+      const edge = 8;
+      const gap = tag.classList.contains("gl-text-far") ? 20 : 12;
+      const anchor = wrapLeft + p.x * size;
+      const width = tag.offsetWidth;
+      const roomRight = viewport - edge - (anchor + gap + width);
+      const roomLeft = anchor - gap - width - edge;
+      const flipped = "flip" in el.dataset;
+      if (!flipped && roomRight < 0 && roomLeft > roomRight + 24) el.dataset.flip = "";
+      else if (flipped && roomLeft < 0 && roomRight > roomLeft + 24) delete el.dataset.flip;
+      const nudge = "flip" in el.dataset ? Math.max(0, -roomLeft) : Math.min(0, roomRight);
+      tag.style.translate = nudge ? `${nudge.toFixed(1)}px 0` : "";
     };
 
     const frame = (now: number) => {
@@ -260,13 +271,19 @@ export default function Globe({ active, labels, onInteract }: Props) {
       },
       { rootMargin: "200px" },
     );
+    const measure = () => {
+      wrapLeft = wrapEl.getBoundingClientRect().left;
+      viewport = document.documentElement.clientWidth;
+    };
     const ro = new ResizeObserver(() => {
       size = wrapEl.offsetWidth;
+      measure();
       globeRef.current?.update({ width: size, height: size });
     });
 
     io.observe(wrapEl);
     ro.observe(wrapEl);
+    window.addEventListener("resize", measure);
     canvas.addEventListener("pointerdown", onDown);
     canvas.addEventListener("pointermove", onMove);
     canvas.addEventListener("pointerup", onUp);
@@ -277,6 +294,7 @@ export default function Globe({ active, labels, onInteract }: Props) {
       cancelAnimationFrame(raf);
       io.disconnect();
       ro.disconnect();
+      window.removeEventListener("resize", measure);
       canvas.removeEventListener("pointerdown", onDown);
       canvas.removeEventListener("pointermove", onMove);
       canvas.removeEventListener("pointerup", onUp);
@@ -349,7 +367,7 @@ export default function Globe({ active, labels, onInteract }: Props) {
       </div>
 
       <div className="label pointer-events-none absolute inset-x-0 bottom-0 flex justify-center text-[0.625rem] text-fog" dir="ltr">
-        <span ref={readoutRef} className="tabular whitespace-pre" />
+        <span ref={readoutRef} className="tabular whitespace-pre bg-ink px-2" />
       </div>
     </div>
   );
