@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { detectRenderTier, prefersReducedMotion } from "@/lib/utils";
+import { allowSoftwareGL, detectRenderTier, isSoftwareRenderer, prefersReducedMotion } from "@/lib/utils";
 import { buildWaterFragment, WATER_VERTEX, type WaterQuality } from "./waterShader";
 
 export type WaterStatus =
@@ -62,9 +62,10 @@ export default function WaterCanvas({ side, onStatus }: Props) {
       premultipliedAlpha: false,
       powerPreference: "high-performance",
       preserveDrawingBuffer: false,
+      failIfMajorPerformanceCaveat: !allowSoftwareGL(),
     };
     const gl = (canvas.getContext("webgl2", attrs) ?? canvas.getContext("webgl", attrs)) as WebGLRenderingContext | null;
-    if (!gl) {
+    if (!gl || isSoftwareRenderer(gl)) {
       report({ mode: "off" });
       return;
     }
@@ -78,12 +79,14 @@ export default function WaterCanvas({ side, onStatus }: Props) {
     let visible = true;
     let pageVisible = document.visibilityState === "visible";
     let running = false;
+    let frozen = false;
     let simTime = STILL_TIME;
     let last = 0;
     let frames = 0;
     let frameAcc = 0;
     let lastReport = 0;
     let lastPointerMove = -1e9;
+    let slowSeconds = 0;
     const look = { x: 0, y: 0, tx: 0, ty: 0 };
     const scan = { x: 0.15, y: -0.25, s: 0, tx: 0.15, ty: -0.25, ts: 0 };
     let sideNow = sideRef.current;
@@ -148,6 +151,13 @@ export default function WaterCanvas({ side, onStatus }: Props) {
           scale = next;
           resize();
         }
+        slowSeconds = avg > 1 / 20 && scale <= minScale ? slowSeconds + 1 : 0;
+        if (slowSeconds >= 3) {
+          stop();
+          frozen = true;
+          report({ mode: "still" });
+          return;
+        }
         if (now - lastReport > 900) {
           lastReport = now;
           report({ mode: "live", fps: Math.round(frames / frameAcc), scale, quality });
@@ -158,7 +168,7 @@ export default function WaterCanvas({ side, onStatus }: Props) {
     };
 
     const start = () => {
-      if (running || still || !program || disposed) return;
+      if (running || still || frozen || !program || disposed) return;
       running = true;
       last = 0;
       raf = requestAnimationFrame(tick);

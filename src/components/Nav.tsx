@@ -98,7 +98,7 @@ export default function Nav() {
         )}
       >
         <nav className="shell flex h-[var(--nav-h)] items-center justify-between gap-6">
-          <button type="button" onClick={() => go("top")} className="group flex items-center gap-3" aria-label="Nadav Shtibel">
+          <button type="button" onClick={() => go("top")} className="group flex items-center gap-3">
             <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true">
               <circle cx="9" cy="10.5" r="3.25" className="fill-signal" />
               <rect x="3" y="13" width="18" height="1.25" className="fill-bone" />

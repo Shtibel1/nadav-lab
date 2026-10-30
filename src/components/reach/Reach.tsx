@@ -74,8 +74,8 @@ export default function Reach() {
           <div className="order-2 col-span-12 lg:order-1 lg:col-span-5" data-reveal style={{ "--d": "120ms" } as React.CSSProperties}>
             <div className="label grid grid-cols-[1fr_auto_auto] gap-x-6 border-b border-line-strong pb-3 text-fog">
               <span>{t.reach.region}</span>
-              <span className="w-20 text-end">{t.reach.distance}</span>
-              <span className="w-16 text-end">{t.reach.rtt}</span>
+              <span className="w-20 whitespace-nowrap text-end">{t.reach.distance}</span>
+              <span className="w-16 whitespace-nowrap text-end">{t.reach.rtt}</span>
             </div>
             <div className="grid grid-cols-[1fr_auto_auto] items-center gap-x-6 border-b border-line py-4">
               <span className="flex items-baseline gap-3">

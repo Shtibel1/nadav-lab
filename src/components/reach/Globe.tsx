@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { Arc, Globe as CobeGlobe, Marker } from "cobe";
 import { origin, regions } from "@/content/data";
-import { prefersReducedMotion } from "@/lib/utils";
+import { hasFastWebGL, prefersReducedMotion } from "@/lib/utils";
 
 const RADIUS = 0.8;
 const TAU = Math.PI * 2;
@@ -27,6 +27,37 @@ function project(v: [number, number, number], phi: number, theta: number, lift =
   const depth = -sp * ct * x + st * y + cp * ct * z;
   return { x: (c + 1) / 2, y: (-s + 1) / 2, front: depth >= 0 };
 }
+
+function slerp(a: number[], b: number[], t: number): [number, number, number] {
+  const dot = Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
+  const omega = Math.acos(dot);
+  const so = Math.sin(omega) || 1;
+  const ka = Math.sin((1 - t) * omega) / so;
+  const kb = Math.sin(t * omega) / so;
+  return [a[0] * ka + b[0] * kb, a[1] * ka + b[1] * kb, a[2] * ka + b[2] * kb];
+}
+
+function svgPath(points: [number, number, number][], phi: number, theta: number, lift: (t: number) => number) {
+  let d = "";
+  let pen = false;
+  points.forEach((v, i) => {
+    const p = project(v, phi, theta, lift(i / (points.length - 1)));
+    if (!p.front) {
+      pen = false;
+      return;
+    }
+    d += `${pen ? "L" : "M"}${(p.x * 100).toFixed(2)} ${(p.y * 100).toFixed(2)}`;
+    pen = true;
+  });
+  return d;
+}
+
+const GRATICULE: [number, number, number][][] = [
+  ...Array.from({ length: 12 }, (_, m) =>
+    Array.from({ length: 37 }, (_, i) => toVec([-90 + i * 5, -180 + m * 30])),
+  ),
+  ...[-60, -30, 0, 30, 60].map((lat) => Array.from({ length: 73 }, (_, i) => toVec([lat, -180 + i * 5]))),
+];
 
 function anglesFor([lat, lng]: [number, number]) {
   return { phi: (3 * Math.PI) / 2 - (lng * Math.PI) / 180, theta: (lat * Math.PI) / 180 };
@@ -66,6 +97,9 @@ export default function Globe({ active, labels, onInteract }: Props) {
   const originRef = useRef<HTMLDivElement>(null);
   const targetRef = useRef<HTMLDivElement>(null);
   const readoutRef = useRef<HTMLSpanElement>(null);
+  const gridRef = useRef<SVGPathElement>(null);
+  const arcsRef = useRef<SVGPathElement>(null);
+  const activeArcRef = useRef<SVGPathElement>(null);
   const activeRef = useRef(active);
   const globeRef = useRef<CobeGlobe | null>(null);
   const interactRef = useRef(onInteract);
@@ -130,6 +164,21 @@ export default function Globe({ active, labels, onInteract }: Props) {
       place(targetRef.current, regions[activeRef.current].coords);
       if (bezelRef.current) bezelRef.current.setAttribute("transform", `rotate(${((-view.phi * 180) / Math.PI).toFixed(2)} 50 50)`);
       if (readoutRef.current) readoutRef.current.textContent = formatLatLng(view.phi, view.theta);
+      if (fallback) drawFallback();
+    };
+
+    const drawFallback = () => {
+      const flat = () => 0.004;
+      gridRef.current?.setAttribute("d", GRATICULE.map((line) => svgPath(line, view.phi, view.theta, flat)).join(""));
+      const from = toVec(origin.coords);
+      const arcs = regions.map((r) => {
+        const to = toVec(r.coords);
+        const pts = Array.from({ length: 33 }, (_, i) => slerp(from, to, i / 32));
+        return svgPath(pts, view.phi, view.theta, (t) => Math.sin(Math.PI * t) * 0.12);
+      });
+      const a = activeRef.current;
+      arcsRef.current?.setAttribute("d", arcs.filter((_, i) => i !== a).join(""));
+      activeArcRef.current?.setAttribute("d", arcs[a]);
     };
 
     const run = () => {
@@ -137,7 +186,15 @@ export default function Globe({ active, labels, onInteract }: Props) {
       if (visible && !disposed) raf = requestAnimationFrame(frame);
     };
 
+    const fallback = !hasFastWebGL();
+    if (fallback) wrapEl.dataset.fallback = "";
+
     const init = async () => {
+      if (fallback) {
+        globeRef.current = { update: () => {}, destroy: () => {} };
+        run();
+        return;
+      }
       const { default: createGlobe } = await import("cobe");
       if (disposed) return;
       globeRef.current = createGlobe(canvas, {
@@ -262,6 +319,12 @@ export default function Globe({ active, labels, onInteract }: Props) {
           })}
         </g>
         <path d="M50 1.2v2.6M50 96.2v2.6M1.2 50h2.6M96.2 50h2.6" stroke="rgb(235 231 222 / 0.5)" strokeWidth="0.2" />
+        <g className="hidden group-data-[fallback]:inline">
+          <circle cx="50" cy="50" r="40" fill="#0b1214" stroke="rgb(214 226 230 / 0.18)" strokeWidth="0.2" />
+          <path ref={gridRef} fill="none" stroke="rgb(214 226 230 / 0.13)" strokeWidth="0.15" />
+          <path ref={arcsRef} fill="none" stroke="rgb(143 160 165 / 0.45)" strokeWidth="0.2" />
+          <path ref={activeArcRef} fill="none" stroke="#ff6224" strokeWidth="0.35" />
+        </g>
       </svg>
 
       <canvas

@@ -134,7 +134,7 @@ export default function Systems() {
                 const typing = line.kind === "cmd" && typed.length < line.text.length;
                 return (
                   <li key={`${run.id}-${i}`} className="grid grid-cols-[2.75rem_1fr] gap-x-3 sm:grid-cols-[4.25rem_3.25rem_1fr] md:grid-cols-[5rem_3.75rem_1fr]">
-                    <span className="hidden tabular text-fog/70 sm:block">+{(line.at / 1000).toFixed(2)}</span>
+                    <span className="hidden tabular text-fog sm:block">+{(line.at / 1000).toFixed(2)}</span>
                     <span className={cn("text-[0.6875rem] tracking-[0.12em]", tag.className)}>{tag.tag}</span>
                     <span className={cn("min-w-0 break-words", line.kind === "cmd" ? "text-bone" : line.kind === "ok" ? "text-bone" : "text-mist")}>
                       {line.kind === "cmd" && <span className="me-2 text-signal">$</span>}

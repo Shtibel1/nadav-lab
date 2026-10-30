@@ -10,6 +10,35 @@ export function prefersReducedMotion(): boolean {
   return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
+export function allowSoftwareGL(): boolean {
+  if (typeof window === "undefined") return false;
+  return new URLSearchParams(window.location.search).has("force-gl");
+}
+
+const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software|basic render|mesa offscreen/i;
+
+export function isSoftwareRenderer(gl: WebGLRenderingContext): boolean {
+  if (allowSoftwareGL()) return false;
+  const info = gl.getExtension("WEBGL_debug_renderer_info");
+  const renderer = String(gl.getParameter(info ? info.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? "");
+  return SOFTWARE_RENDERER.test(renderer);
+}
+
+export function hasFastWebGL(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const attrs = { failIfMajorPerformanceCaveat: !allowSoftwareGL() };
+    const c = document.createElement("canvas");
+    const gl = (c.getContext("webgl2", attrs) ?? c.getContext("webgl", attrs)) as WebGLRenderingContext | null;
+    if (!gl) return false;
+    const fast = !isSoftwareRenderer(gl);
+    gl.getExtension("WEBGL_lose_context")?.loseContext();
+    return fast;
+  } catch {
+    return false;
+  }
+}
+
 export type RenderTier = "none" | "lite" | "full";
 
 export function detectRenderTier(): RenderTier {

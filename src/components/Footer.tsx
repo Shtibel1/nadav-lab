@@ -10,12 +10,10 @@ export default function Footer() {
     <footer className="relative">
       <div className="shell">
         <div
-          className="display select-none overflow-hidden whitespace-nowrap border-t border-line pt-10 text-center text-[clamp(3.5rem,15.5vw,16.5rem)] leading-[0.8] text-bone/[0.07]"
+          className="wordmark display select-none overflow-hidden whitespace-nowrap border-t border-line pt-10 text-center text-[clamp(3.5rem,15.5vw,16.5rem)] leading-[0.8] text-bone/[0.07]"
           aria-hidden="true"
           dir="ltr"
-        >
-          Nadav Shtibel
-        </div>
+        />
         <div className="label flex flex-col gap-4 border-t border-line py-7 text-fog md:flex-row md:items-center md:justify-between">
           <span>
             © {new Date().getFullYear()} Nadav Shtibel · {t.footer.rights}
