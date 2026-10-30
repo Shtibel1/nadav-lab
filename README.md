@@ -1,112 +1,76 @@
-# Nadav Shtibel — Portfolio
+# Nadav Shtibel — Lab
 
-Interactive engineering portfolio featuring real-time 3D ocean rendering, animated agent terminals, and global infrastructure visualization.
+Personal site for [lab.nadav-shtibel.com](https://lab.nadav-shtibel.com). It is Hebrew-first (RTL) with an English toggle, and builds to a fully static export.
 
-## Features
+## Design direction: "Instrument at sea"
 
-- **Real-time 3D Ocean** — WebGL-powered ocean simulation with golden hour lighting and scroll-driven underwater transitions
-- **Bilingual Support** — Full Hebrew (RTL) and English localization with seamless language switching
-- **Agent Terminal** — Live-style terminal animations showcasing AI agents, automation workflows, and CI/CD pipelines
-- **Projects Showcase** — Bento grid layout with spotlight effects and live GitHub star counts
-- **Tech Stack Timeline** — Scroll-pinned technology overview with animated shader backgrounds
-- **Global Infrastructure** — Interactive 3D globe with AWS region connections from Israel
-- **Contact Form** — Styled contact form with email integration
+The site reads like a precision instrument looking out over open water at dusk: near-black ink, warm bone type, one signal-orange accent and a tide-teal secondary.
 
-## Tech Stack
+- **Type.** Instrument Serif (Latin) and Frank Ruhl Libre Light (Hebrew) set at display scale, IBM Plex Sans Hebrew for body text, and IBM Plex Mono for instrument labels and data.
+- **Hero.** A raymarched ocean rendered in a single fragment shader, with a low sun, Fresnel sky reflection, specular glitter and an ACES grade. A lidar-style dot grid follows the cursor and drifts on autopilot when idle.
+- **Work.** Project cards each carry a generated topographic "signature" (seeded per project), with tilt, sheen and parallax on hover.
+- **Systems.** Replayed agent runs shown in a terminal with a process switcher.
+- **Reach.** An interactive globe (drag with inertia) that cycles AWS regions from il-central-1, showing great-circle distance and the fiber round-trip floor for each.
+- **Stack and Contact.** The stack is an editorial spec sheet; contact is a mailto form.
 
-- **Framework:** Next.js 14+ (App Router)
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS
-- **3D Graphics:** Three.js, React Three Fiber, React Three Drei
-- **Animations:** Framer Motion, GSAP
-- **Smooth Scrolling:** Lenis
-- **Globe:** Cobe
+## Develop
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm or yarn
-
-### Installation
+Requires Node 20.9+.
 
 ```bash
 npm install
+npm run dev          # http://localhost:3000
 ```
 
-### Development
+## Build and preview the static export
 
 ```bash
-npm run dev
+npm run build        # writes ./out
+npm run preview      # serves ./out (gzip) at http://localhost:4173
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+`./out` can be deployed to any static host (S3/CloudFront, Amplify, Cloudflare Pages, Netlify, GitHub Pages).
 
-### Production Build
+Checks, as run in CI:
 
 ```bash
-npm run build
-npm start
+npm run lint
+npm run typecheck
 ```
 
-## Deployment
+## Rendering tiers and fallbacks
 
-This portfolio is optimized for AWS Amplify deployment. It supports both static export and SSR modes.
+Both WebGL scenes, the water and the globe, pick a tier at runtime:
 
-### AWS Amplify
+| Condition | Water hero | Globe |
+| --- | --- | --- |
+| Desktop GPU | Full shader, adaptive resolution | WebGL globe |
+| Touch, small screen or ≤4 cores | Lite shader preset | WebGL globe |
+| Save-Data, 2G, ≤2 GB memory, no WebGL, software renderer | Painted CSS poster | SVG graticule globe |
+| `prefers-reduced-motion` | One still frame | No auto-cycling; snaps to the chosen region |
 
-1. Connect your repository to AWS Amplify
-2. Amplify will auto-detect Next.js and configure the build settings
-3. Deploy
+Both renderers pause when offscreen or when the tab is hidden. If the frame rate stays under 20 fps at minimum resolution, the water freezes to a still frame.
 
-### Environment Variables
+Append `?force-gl` to the URL to allow software WebGL renderers (for example headless Chrome with SwiftShader). This is useful for screenshots and debugging only.
 
-No environment variables are required for basic deployment. GitHub star counts are fetched client-side with graceful fallback.
-
-## Project Structure
+## Structure
 
 ```
 src/
-├── app/                  # Next.js App Router pages
+├── app/              layout, page, global styles, icon
 ├── components/
-│   ├── hero/            # Ocean scene and hero section
-│   ├── terminal/        # Agent terminal animations
-│   ├── projects/        # Projects bento grid
-│   ├── timeline/        # Tech stack timeline
-│   ├── globe/           # 3D globe visualization
-│   ├── contact/         # Contact form
-│   └── ui/              # Reusable UI components
-├── hooks/               # Custom React hooks
-├── i18n/                # Internationalization
-└── lib/                 # Utility functions
+│   ├── hero/         water shader + canvas runtime
+│   ├── work/         project cards and generative signatures
+│   ├── systems/      agent run terminal
+│   ├── reach/        globe and region table
+│   ├── stack/        spec sheet
+│   ├── contact/      contact form
+│   └── ui/           shared primitives
+├── content/data.ts   projects, runs, stack and regions
+├── i18n/             he/en dictionaries and locale context
+└── lib/              utilities (render tier, geo math, scroll)
 ```
-
-## Performance
-
-- Lighthouse Performance Score: 80+ (mobile)
-- Intersection Observer for lazy loading and animation triggers
-- WebGL2 detection with static fallback for unsupported devices
-- Reduced motion support for accessibility
-- Optimized 3D scene with conditional rendering
-
-## Browser Support
-
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
-
-WebGL2 is required for the 3D ocean effect. A static fallback is provided for browsers without WebGL2 support or for users with reduced motion preferences.
 
 ## License
 
-MIT License — see LICENSE file for details.
-
-Third-party licenses are documented in THIRD_PARTY_LICENSES.
-
-## Author
-
-**Nadav Shtibel**
-- GitHub: [@Shtibel1](https://github.com/Shtibel1)
-- Email: nadavshtibel@gmail.com
+MIT — see `LICENSE`. Third-party notices are in `THIRD_PARTY_LICENSES`.

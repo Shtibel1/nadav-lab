@@ -1,67 +1,32 @@
 # Third-Party Licenses
 
-This project uses the following open-source libraries. Their licenses are included below.
+This site is built with the open-source software and fonts listed below. Their
+license notices are reproduced here as required. None of them are credited in
+the site's user interface.
 
 ---
 
-## Three.js
-- Source: https://github.com/mrdoob/three.js
-- License: MIT
-- Copyright © 2010-2024 three.js authors
+## Software (MIT License)
 
-## React Three Fiber (@react-three/fiber)
-- Source: https://github.com/pmndrs/react-three-fiber
-- License: MIT
-- Copyright © 2019 Paul Henschel
+| Package        | Version | Source                                         | Copyright                                   |
+| -------------- | ------- | ---------------------------------------------- | ------------------------------------------- |
+| next           | 16.4.3  | https://github.com/vercel/next.js              | Copyright (c) 2025 Vercel, Inc.             |
+| react          | 19.3.0  | https://github.com/facebook/react              | Copyright (c) Meta Platforms, Inc. and affiliates. |
+| react-dom      | 19.3.0  | https://github.com/facebook/react              | Copyright (c) Meta Platforms, Inc. and affiliates. |
+| cobe           | 2.0.1   | https://github.com/shuding/cobe                | Copyright (c) 2021 Shu Ding                 |
+| lenis          | 1.3.27  | https://github.com/darkroomengineering/lenis   | Copyright (c) 2024 darkroom.engineering     |
+| tailwindcss    | 4.3.3   | https://github.com/tailwindlabs/tailwindcss    | Copyright (c) Tailwind Labs, Inc.           |
+| clsx           | 2.1.1   | https://github.com/lukeed/clsx                 | Copyright (c) Luke Edwards                  |
+| tailwind-merge | 3.7.0   | https://github.com/dcastil/tailwind-merge      | Copyright (c) 2021 Dany Castillo            |
 
-## React Three Drei (@react-three/drei)
-- Source: https://github.com/pmndrs/drei
-- License: MIT
-- Copyright © 2020 Paul Henschel
+### Design reference
 
-## Framer Motion
-- Source: https://github.com/framer/motion
-- License: MIT
-- Copyright © 2018 Framer B.V.
+The hero water shader (`src/components/hero/waterShader.ts`) is an original
+implementation. Its look was informed by Ultra-Water
+(https://github.com/Humpalumps/Ultra-Water), MIT License; no source from that
+project is included.
 
-## Lenis
-- Source: https://github.com/darkroomengineering/lenis
-- License: MIT
-- Copyright © 2022 darkroom.engineering
-
-## GSAP (GreenSock Animation Platform)
-- Source: https://github.com/greensock/GSAP
-- License: Standard License (Free for non-commercial use)
-- Note: GSAP is free to use in most projects. See https://greensock.com/licensing/
-
-## Cobe Globe
-- Source: https://github.com/shuding/cobe
-- License: MIT
-- Copyright © 2021 Shu Ding
-
-## Next.js
-- Source: https://github.com/vercel/next.js
-- License: MIT
-- Copyright © 2024 Vercel, Inc.
-
-## Tailwind CSS
-- Source: https://github.com/tailwindlabs/tailwindcss
-- License: MIT
-- Copyright © Tailwind Labs, Inc.
-
-## clsx
-- Source: https://github.com/lukeed/clsx
-- License: MIT
-- Copyright © Luke Edwards
-
-## tailwind-merge
-- Source: https://github.com/dcastil/tailwind-merge
-- License: MIT
-- Copyright © 2021 Dany Castillo
-
----
-
-## MIT License
+### MIT License text
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -83,14 +48,98 @@ SOFTWARE.
 
 ---
 
-## Ocean Shader Inspiration
+## Fonts (SIL Open Font License 1.1)
 
-The ocean surface rendering draws inspiration from various open-source WebGL water
-implementations, including:
+Fonts are self-hosted at build time via `next/font/google`.
 
-- Ultra Water by Humpalumps (MIT License)
-  https://github.com/Humpalumps/Ultra-Water
-  Copyright © 2026 Humpalumps
+| Font                 | Source                                              | Copyright                                              |
+| -------------------- | --------------------------------------------------- | ------------------------------------------------------ |
+| Instrument Serif     | https://github.com/Instrument/instrument-serif      | Copyright 2022 The Instrument Serif Project Authors    |
+| Frank Ruhl Libre     | https://github.com/fontef/frankruhllibre            | Copyright 2015 The Frank Ruhl Libre Project Authors    |
+| IBM Plex Sans Hebrew | https://github.com/IBM/plex                         | Copyright © 2017 IBM Corp., with Reserved Font Name "Plex" |
+| IBM Plex Mono        | https://github.com/IBM/plex                         | Copyright © 2017 IBM Corp., with Reserved Font Name "Plex" |
 
-The shader implementation in this project has been substantially rewritten and
-customized for this portfolio's specific visual requirements.
+### SIL Open Font License, Version 1.1
+
+PREAMBLE
+The goals of the Open Font License (OFL) are to stimulate worldwide
+development of collaborative font projects, to support the font creation
+efforts of academic and linguistic communities, and to provide a free and
+open framework in which fonts may be shared and improved in partnership
+with others.
+
+The OFL allows the licensed fonts to be used, studied, modified and
+redistributed freely as long as they are not sold by themselves. The
+fonts, including any derivative works, can be bundled, embedded,
+redistributed and/or sold with any software provided that any reserved
+names are not used by derivative works. The fonts and derivatives,
+however, cannot be released under any other type of license. The
+requirement for fonts to remain under this license does not apply
+to any document created using the fonts or their derivatives.
+
+DEFINITIONS
+"Font Software" refers to the set of files released by the Copyright
+Holder(s) under this license and clearly marked as such. This may
+include source files, build scripts and documentation.
+
+"Reserved Font Name" refers to any names specified as such after the
+copyright statement(s).
+
+"Original Version" refers to the collection of Font Software components as
+distributed by the Copyright Holder(s).
+
+"Modified Version" refers to any derivative made by adding to, deleting,
+or substituting -- in part or in whole -- any of the components of the
+Original Version, by changing formats or by porting the Font Software to a
+new environment.
+
+"Author" refers to any designer, engineer, programmer, technical
+writer or other person who contributed to the Font Software.
+
+PERMISSION & CONDITIONS
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of the Font Software, to use, study, copy, merge, embed, modify,
+redistribute, and sell modified and unmodified copies of the Font
+Software, subject to the following conditions:
+
+1) Neither the Font Software nor any of its individual components,
+in Original or Modified Versions, may be sold by itself.
+
+2) Original or Modified Versions of the Font Software may be bundled,
+redistributed and/or sold with any software, provided that each copy
+contains the above copyright notice and this license. These can be
+included either as stand-alone text files, human-readable headers or
+in the appropriate machine-readable metadata fields within text or
+binary files as long as those fields can be easily viewed by the user.
+
+3) No Modified Version of the Font Software may use the Reserved Font
+Name(s) unless explicit written permission is granted by the corresponding
+Copyright Holder. This restriction only applies to the primary font name as
+presented to the users.
+
+4) The name(s) of the Copyright Holder(s) and the Author(s) of the Font
+Software shall not be used to promote, endorse or advertise any
+Modified Version, except to acknowledge the contribution(s) of the
+Copyright Holder(s) and the Author(s) or with their explicit written
+permission.
+
+5) The Font Software, modified or unmodified, in part or in whole,
+must be distributed entirely under this license, and must not be
+distributed under any other license. The requirement for fonts to
+remain under this license does not apply to any document created
+using the Font Software.
+
+TERMINATION
+This license becomes null and void if any of the above conditions are
+not met.
+
+DISCLAIMER
+THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+OTHER DEALINGS IN THE FONT SOFTWARE.
