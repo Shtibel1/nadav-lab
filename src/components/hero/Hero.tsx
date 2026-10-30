@@ -24,12 +24,6 @@ export default function Hero() {
   const [status, setStatus] = useState<WaterStatus | null>(null);
   const onStatus = useCallback((s: WaterStatus) => setStatus(s), []);
 
-  const simLabel =
-    status?.mode === "live"
-      ? `${t.hero.sim} · ${String(status.fps).padStart(2, "0")} fps · ${status.scale.toFixed(2)}×`
-      : status?.mode === "still"
-        ? t.hero.still
-        : "\u00A0";
 
   return (
     <section id="top" className="relative isolate h-[100svh] min-h-[620px] overflow-hidden" aria-label={t.hero.name.join(" ")}>
@@ -38,12 +32,12 @@ export default function Hero() {
         <WaterCanvas side={dir === "rtl" ? -1 : 1} onStatus={onStatus} />
       </div>
       <div
-        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(5_8_10/0.65)_0%,transparent_18%,transparent_48%,rgb(5_8_10/0.55)_78%,#05080a_100%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(5_8_10/0.6)_0%,transparent_16%,transparent_36%,rgb(5_8_10/0.5)_52%,rgb(5_8_10/0.72)_80%,#05080a_100%)] md:bg-[linear-gradient(180deg,rgb(5_8_10/0.65)_0%,transparent_18%,transparent_48%,rgb(5_8_10/0.55)_78%,#05080a_100%)]"
         aria-hidden="true"
       />
       <Corners />
 
-      <div className="shell relative flex h-full flex-col justify-end pb-[5.75rem] md:pb-[7rem]">
+      <div className="hero-copy shell relative flex h-full flex-col justify-end pb-[5.75rem] md:pb-[7rem]">
         <p className="label hero-fade mb-6 flex items-center gap-3 text-bone/80" style={{ "--i": 0 } as React.CSSProperties}>
           <span className="h-px w-8 bg-signal" />
           {t.hero.eyebrow}
@@ -51,7 +45,7 @@ export default function Hero() {
 
         <h1
           className={cn(
-            "display text-bone",
+            "display display-tight text-bone",
             locale === "he" ? "text-[clamp(5.25rem,17vw,15rem)]" : "text-[clamp(4.5rem,15vw,14.5rem)]",
           )}
         >
@@ -107,9 +101,16 @@ export default function Hero() {
         <div className="shell label flex h-14 items-center justify-between gap-6 text-mist">
           <span className="flex min-w-0 items-center gap-3">
             <span className={cn("pulse-dot shrink-0", status?.mode === "live" ? "text-signal" : "text-fog")} />
-            <span className="truncate tabular" dir="ltr">
-              {simLabel}
-            </span>
+            {status?.mode === "live" ? (
+              <>
+                <span className="hidden truncate sm:inline">{t.hero.sim}</span>
+                <span className="whitespace-nowrap tabular text-fog" dir="ltr">
+                  {String(status.fps).padStart(2, "0")} fps · {status.scale.toFixed(2)}×
+                </span>
+              </>
+            ) : (
+              <span className="truncate">{status?.mode === "still" ? t.hero.still : "\u00A0"}</span>
+            )}
           </span>
           <span className="hidden tabular md:inline" dir="ltr">
             {t.hero.coords}

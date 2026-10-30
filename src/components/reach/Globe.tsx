@@ -8,7 +8,7 @@ import { prefersReducedMotion } from "@/lib/utils";
 const RADIUS = 0.8;
 const TAU = Math.PI * 2;
 const SIGNAL: [number, number, number] = [1, 0.4, 0.16];
-const DIM_ARC: [number, number, number] = [0.32, 0.4, 0.42];
+const DIM_ARC: [number, number, number] = [0.2, 0.26, 0.28];
 const BONE: [number, number, number] = [0.86, 0.85, 0.8];
 
 function toVec([lat, lng]: [number, number]): [number, number, number] {
@@ -49,8 +49,8 @@ function formatLatLng(phi: number, theta: number) {
   const lat = (theta * 180) / Math.PI;
   let lng = ((3 * Math.PI) / 2 - phi) * (180 / Math.PI);
   lng = ((((lng + 180) % 360) + 360) % 360) - 180;
-  const f = (n: number) => Math.abs(n).toFixed(2).padStart(6, "0");
-  return `${f(lat)}°${lat >= 0 ? "N" : "S"}  ${f(lng)}°${lng >= 0 ? "E" : "W"}`;
+  const f = (n: number, w: number) => Math.abs(n).toFixed(2).padStart(w, "0");
+  return `LAT ${f(lat, 5)}°${lat >= 0 ? "N" : "S"}   LON ${f(lng, 6)}°${lng >= 0 ? "E" : "W"}`;
 }
 
 interface Props {
@@ -98,6 +98,10 @@ export default function Globe({ active, labels, onInteract }: Props) {
       const p = project(toVec(coords), view.phi, view.theta);
       el.style.transform = `translate3d(${(p.x * size).toFixed(1)}px, ${(p.y * size).toFixed(1)}px, 0)`;
       el.style.opacity = p.front ? "1" : "0";
+      const tag = el.querySelector<HTMLElement>(".gl-text");
+      const room = size - p.x * size - (tag ? tag.offsetWidth + 28 : 0);
+      if (room < 0) el.dataset.flip = "";
+      else if (room > 24) delete el.dataset.flip;
     };
 
     const frame = (now: number) => {
@@ -230,8 +234,8 @@ export default function Globe({ active, labels, onInteract }: Props) {
       <svg viewBox="0 0 100 100" className="pointer-events-none absolute inset-0 h-full w-full" aria-hidden="true">
         <defs>
           <radialGradient id="globe-halo" cx="50%" cy="50%" r="50%">
-            <stop offset="70%" stopColor="#8fd3cc" stopOpacity="0.07" />
-            <stop offset="80%" stopColor="#8fd3cc" stopOpacity="0.02" />
+            <stop offset="76%" stopColor="#8fd3cc" stopOpacity="0.08" />
+            <stop offset="86%" stopColor="#8fd3cc" stopOpacity="0.02" />
             <stop offset="100%" stopColor="#8fd3cc" stopOpacity="0" />
           </radialGradient>
         </defs>
@@ -269,14 +273,12 @@ export default function Globe({ active, labels, onInteract }: Props) {
       <div className="pointer-events-none absolute inset-0" dir="ltr">
         <div ref={originRef} className="absolute left-0 top-0 transition-opacity duration-300">
           <span className="absolute -left-[7px] -top-[7px] h-[14px] w-[14px] rounded-full border border-signal/80" />
-          <span className="label absolute left-3 top-2 whitespace-nowrap text-[0.625rem] text-bone">
-            <span className="text-signal">{labels.origin}</span>
-          </span>
+          <span className="gl-text label absolute left-3 top-2 whitespace-nowrap bg-ink/70 px-1.5 py-0.5 text-[0.625rem] text-signal backdrop-blur-sm">{labels.origin}</span>
         </div>
         <div ref={targetRef} className="absolute left-0 top-0 transition-opacity duration-300">
           <span className="absolute -left-[5px] -top-[5px] h-[10px] w-[10px] border border-bone/80" />
-          <span className="absolute left-[6px] top-[-28px] h-[22px] w-px origin-bottom rotate-[35deg] bg-bone/40" />
-          <span className="label absolute left-[20px] top-[-42px] whitespace-nowrap bg-ink/70 px-2 py-1 text-[0.625rem] text-bone backdrop-blur-sm">
+          <span className="gl-lead absolute left-[6px] top-[-28px] h-[22px] w-px origin-bottom rotate-[35deg] bg-bone/40" />
+          <span className="gl-text gl-text-far label absolute left-[20px] top-[-42px] whitespace-nowrap bg-ink/70 px-2 py-1 text-[0.625rem] text-bone backdrop-blur-sm">
             {labels.code}
             <span className="ms-2 text-fog">{labels.region}</span>
           </span>

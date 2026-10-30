@@ -93,7 +93,7 @@ export default function Systems() {
                         )}
                       />
                       <span className="flex w-full items-center justify-between gap-3">
-                        <span className={cn("mono text-[0.8125rem]", on ? "text-bone" : "text-mist")} dir="ltr">
+                        <span className={cn("mono truncate text-[0.75rem] md:text-[0.8125rem]", on ? "text-bone" : "text-mist")} dir="ltr">
                           {r.title}
                         </span>
                         <span className={cn("pulse-dot", on ? "text-signal" : "text-fog/60 [&::after]:hidden")} />
@@ -115,7 +115,7 @@ export default function Systems() {
               </span>
               <span className="label flex shrink-0 items-center gap-3 text-mist">
                 <span className={done ? "text-bone" : "text-signal"}>{done ? t.systems.complete : t.systems.streaming}</span>
-                <span className="tabular text-fog" dir="ltr">
+                <span className="tabular normal-case text-fog" dir="ltr">
                   {(Math.min(elapsed, total) / 1000).toFixed(2)}s
                 </span>
               </span>
@@ -125,7 +125,7 @@ export default function Systems() {
               />
             </div>
 
-            <ol className="mono relative min-h-[19rem] space-y-0 px-5 py-6 text-[0.8125rem] leading-7 md:min-h-[21rem] md:text-[0.875rem]" dir="ltr" aria-live="off">
+            <ol className="mono relative min-h-[20rem] px-5 py-6 text-[0.75rem] leading-6 sm:text-[0.8125rem] md:min-h-[21rem] md:text-[0.875rem] md:leading-7" dir="ltr" aria-live="off">
               {run.lines.map((line, i) => {
                 if (elapsed < line.at) return null;
                 const tag = kindTag[line.kind];
@@ -133,20 +133,20 @@ export default function Systems() {
                   line.kind === "cmd" ? line.text.slice(0, Math.floor((elapsed - line.at) / CHAR_MS)) : line.text;
                 const typing = line.kind === "cmd" && typed.length < line.text.length;
                 return (
-                  <li key={`${run.id}-${i}`} className="grid grid-cols-[4.25rem_3.25rem_1fr] gap-x-3 md:grid-cols-[5rem_3.75rem_1fr]">
-                    <span className="tabular text-fog/70">+{(line.at / 1000).toFixed(2)}</span>
+                  <li key={`${run.id}-${i}`} className="grid grid-cols-[2.75rem_1fr] gap-x-3 sm:grid-cols-[4.25rem_3.25rem_1fr] md:grid-cols-[5rem_3.75rem_1fr]">
+                    <span className="hidden tabular text-fog/70 sm:block">+{(line.at / 1000).toFixed(2)}</span>
                     <span className={cn("text-[0.6875rem] tracking-[0.12em]", tag.className)}>{tag.tag}</span>
                     <span className={cn("min-w-0 break-words", line.kind === "cmd" ? "text-bone" : line.kind === "ok" ? "text-bone" : "text-mist")}>
                       {line.kind === "cmd" && <span className="me-2 text-signal">$</span>}
-                      <span dir="auto">{typed}</span>
+                      <span>{typed}</span>
                       {typing && <span className="caret" />}
                     </span>
                   </li>
                 );
               })}
               {done && (
-                <li className="grid grid-cols-[4.25rem_3.25rem_1fr] gap-x-3 md:grid-cols-[5rem_3.75rem_1fr]">
-                  <span />
+                <li className="grid grid-cols-[2.75rem_1fr] gap-x-3 sm:grid-cols-[4.25rem_3.25rem_1fr] md:grid-cols-[5rem_3.75rem_1fr]">
+                  <span className="hidden sm:block" />
                   <span />
                   <span>
                     <span className="me-2 text-signal">$</span>

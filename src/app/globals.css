@@ -31,7 +31,6 @@ html {
   background: var(--color-ink);
   color: var(--color-bone);
   -webkit-text-size-adjust: 100%;
-  text-rendering: optimizeLegibility;
 }
 
 html:not(.lenis) {
@@ -59,6 +58,10 @@ body {
   overflow-x: clip;
 }
 
+button {
+  text-transform: inherit;
+}
+
 ::selection {
   background: var(--color-signal);
   color: var(--color-ink);
@@ -74,12 +77,18 @@ body {
 .display {
   font-family: var(--font-display);
   font-weight: 400;
-  letter-spacing: -0.02em;
+  font-kerning: normal;
+  letter-spacing: -0.012em;
   line-height: 0.92;
 }
 
+.display-tight {
+  letter-spacing: -0.025em;
+}
+
 [dir="rtl"] .display {
-  letter-spacing: -0.01em;
+  font-weight: 300;
+  letter-spacing: -0.012em;
   line-height: 1;
 }
 
@@ -92,8 +101,13 @@ body {
 }
 
 [dir="rtl"] .label {
-  letter-spacing: 0.04em;
-  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  font-size: 0.78rem;
+}
+
+[dir="rtl"] .label:lang(he) .tabular,
+[dir="rtl"] .label [dir="ltr"] {
+  letter-spacing: 0.1em;
 }
 
 .mono {
@@ -167,6 +181,10 @@ html.js [data-reveal="lines"] .line-mask > span {
 
 html.js [data-reveal="lines"][data-in] .line-mask > span {
   transform: none;
+}
+
+.hero-copy {
+  text-shadow: 0 1px 24px rgb(3 6 8 / 0.65);
 }
 
 .hero-rise {
@@ -249,10 +267,15 @@ html.js [data-reveal="lines"][data-in] .line-mask > span {
 /* ——— Hero water ——— */
 
 .water-poster {
+  --sun-x: 26%;
   background:
-    radial-gradient(60% 22% at 28% 33%, rgb(255 98 36 / 0.32), transparent 70%),
-    radial-gradient(120% 40% at 50% 34%, rgb(120 150 156 / 0.22), transparent 70%),
-    linear-gradient(180deg, #030507 0%, #0a1215 22%, #1a2427 33.5%, #0b1316 34%, #071012 55%, #040809 100%);
+    radial-gradient(18% 5% at var(--sun-x) 34%, rgb(255 140 90 / 0.55), transparent 70%),
+    radial-gradient(48% 16% at var(--sun-x) 34%, rgb(255 98 36 / 0.16), transparent 70%),
+    linear-gradient(180deg, #010203 0%, #05090b 20%, #0d1416 33.6%, #070d0f 34.2%, #050a0c 60%, #030607 100%);
+}
+
+[dir="ltr"] .water-poster {
+  --sun-x: 74%;
 }
 
 .water-poster::after {
@@ -260,9 +283,9 @@ html.js [data-reveal="lines"][data-in] .line-mask > span {
   position: absolute;
   inset: 34% 0 0;
   background:
-    repeating-linear-gradient(178deg, transparent 0 6px, rgb(160 190 196 / 0.035) 6px 7px),
-    linear-gradient(90deg, transparent 18%, rgb(255 98 36 / 0.16) 26%, transparent 34%);
-  mask-image: linear-gradient(180deg, black, transparent 85%);
+    repeating-linear-gradient(179deg, transparent 0 5px, rgb(160 190 196 / 0.03) 5px 6px),
+    radial-gradient(9% 60% at var(--sun-x) 0%, rgb(255 120 60 / 0.16), transparent 100%);
+  mask-image: linear-gradient(180deg, black, transparent 90%);
 }
 
 .water-canvas {
@@ -281,6 +304,23 @@ html.js [data-reveal="lines"][data-in] .line-mask > span {
   border-color: rgb(235 231 222 / 0.45);
   border-style: solid;
   border-width: 0;
+}
+
+/* ——— Globe tags ——— */
+
+[data-flip] > .gl-text {
+  left: auto;
+  right: 12px;
+}
+
+[data-flip] > .gl-text-far {
+  right: 20px;
+}
+
+[data-flip] > .gl-lead {
+  left: auto;
+  right: 6px;
+  rotate: -35deg;
 }
 
 /* ——— Cards ——— */

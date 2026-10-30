@@ -13,7 +13,7 @@ const instrument = Instrument_Serif({
 const frank = Frank_Ruhl_Libre({
   variable: "--font-frank",
   subsets: ["hebrew"],
-  weight: ["400"],
+  weight: ["300", "400"],
   display: "swap",
 });
 

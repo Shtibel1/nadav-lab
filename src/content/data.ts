@@ -107,7 +107,7 @@ export const agentRuns: AgentRun[] = [
       { kind: "cmd", text: "agent run invoice-ocr --input scan_0847.pdf", at: 0 },
       { kind: "step", text: "load model hebrew-ocr · 3 pages", at: 900 },
       { kind: "step", text: "extract fields → supplier, vat_id, total, due", at: 1500 },
-      { kind: "data", text: "ח.פ 514825370 · סה״כ ₪12,450.00 · מע״מ 17%", at: 2300 },
+      { kind: "data", text: "vat_id=514825370  total=₪12,450.00  vat=17%  lang=he", at: 2300 },
       { kind: "step", text: "validate against ledger schema v4", at: 2900 },
       { kind: "ok", text: "filed invoices/2024-01/inv-0847.json · 1.84s", at: 3500 },
     ],

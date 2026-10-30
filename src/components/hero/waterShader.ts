@@ -91,17 +91,18 @@ vec3 normalAt(vec2 xz, float e) {
   return normalize(cross(a, b));
 }
 
-vec3 sky(vec3 d, vec3 sun) {
-  float y = clamp(d.y, 0.0, 1.0);
-  vec3 zenith = vec3(0.004, 0.008, 0.012);
-  vec3 haze = vec3(0.085, 0.112, 0.122);
-  vec3 col = mix(haze, zenith, pow(y, 0.38));
+vec3 sky(vec3 d, vec3 sun, float disc) {
+  float y = max(d.y, 0.0);
+  vec3 zenith = vec3(0.0008, 0.0018, 0.0034);
+  vec3 haze = vec3(0.05, 0.066, 0.073);
+  vec3 col = zenith + (haze - zenith) * (0.72 * exp(-y * 16.0) + 0.28 * exp(-y * 3.2));
   float s = max(dot(d, sun), 0.0);
-  float low = (1.0 - y) * (1.0 - y);
-  col += SIGNAL * pow(s, 5.0) * 0.16 * low;
-  col += vec3(1.0, 0.48, 0.22) * pow(s, 60.0) * 0.55;
-  col += vec3(1.0, 0.8, 0.62) * smoothstep(0.99955, 0.99988, s) * 5.0;
-  col += vec3(0.16, 0.19, 0.2) * exp(-abs(d.y) * 110.0) * 0.4;
+  float band = exp(-y * 9.0);
+  col += SIGNAL * pow(s, 8.0) * 0.06 * band;
+  col += vec3(1.0, 0.42, 0.18) * pow(s, 48.0) * 0.22 * band;
+  col += vec3(1.0, 0.56, 0.3) * pow(s, 500.0) * 0.8 * disc;
+  col += vec3(1.0, 0.82, 0.64) * smoothstep(0.99976, 0.99992, s) * 7.0 * disc;
+  col += vec3(0.08, 0.1, 0.105) * exp(-y * 180.0) * 0.6;
   return col;
 }
 
@@ -114,9 +115,11 @@ float hash(vec2 p) {
 }
 
 vec3 cameraRay(vec2 uv) {
-  float pitch = 0.135 - uLook.y * 0.022;
+  float portrait = 1.0 - clamp(uRes.x / uRes.y, 0.55, 1.0);
+  float focal = 1.25 * pow(1.0 - portrait, 0.6);
+  float pitch = 0.135 + portrait * 0.2 - uLook.y * 0.022;
   float yaw = uLook.x * 0.05;
-  vec3 rd = normalize(vec3(uv, 1.25));
+  vec3 rd = normalize(vec3(uv, focal));
   float cp = cos(pitch), sp = sin(pitch);
   rd = vec3(rd.x, rd.y * cp - rd.z * sp, rd.y * sp + rd.z * cp);
   float cy = cos(yaw), sy = sin(yaw);
@@ -127,11 +130,12 @@ void main() {
   vec2 uv = (gl_FragCoord.xy - 0.5 * uRes) / uRes.y;
   vec3 ro = vec3(uTime * 0.08, 2.1, uTime * 0.32);
   vec3 rd = cameraRay(uv);
-  vec3 sun = normalize(vec3(0.46 * uSide + uLook.x * 0.03, 0.032, 1.0));
+  float aspect = uRes.x / uRes.y;
+  vec3 sun = normalize(vec3(clamp(0.24 * aspect, 0.1, 0.5) * uSide + uLook.x * 0.03, 0.017, 1.0));
 
   vec3 col;
   if (rd.y >= -0.0005) {
-    col = sky(rd, sun);
+    col = sky(rd, sun, 1.0);
   } else {
     float dist = march(ro, rd);
     vec3 pos = ro + rd * dist;
@@ -141,7 +145,7 @@ void main() {
     float fres = 0.04 + 0.96 * pow(1.0 - max(0.0, dot(-N, rd)), 5.0);
     vec3 R = reflect(rd, N);
     R.y = abs(R.y);
-    vec3 refl = sky(R, sun) + vec3(1.0, 0.6, 0.38) * pow(max(dot(R, sun), 0.0), 900.0) * 48.0;
+    vec3 refl = sky(R, sun, 0.0) + vec3(1.0, 0.54, 0.3) * pow(max(dot(R, sun), 0.0), 1800.0) * 85.0;
 
     float h = clamp((pos.y + DEPTH) / DEPTH, 0.0, 1.0);
     vec3 scatter = vec3(0.003, 0.017, 0.022) * (0.3 + h * h * 1.8);
@@ -153,23 +157,26 @@ void main() {
       if (sd.y < -0.002) {
         vec3 hit = ro + sd * ((-0.45 * DEPTH - ro.y) / sd.y);
         float d = length(pos.xz - hit.xz);
-        float radius = 4.2 + 0.03 * length(hit - ro);
-        float mask = (1.0 - smoothstep(radius * 0.25, radius, d)) * uScan.z;
-        vec2 g = abs(fract(pos.xz * 0.7) - 0.5) * 2.0;
-        float w = 0.035 + dist * 0.0035;
+        float radius = 3.4 + 0.025 * length(hit - ro);
+        float mask = (1.0 - smoothstep(radius * 0.2, radius, d)) * uScan.z;
+        vec2 f = fract(pos.xz * 1.8) - 0.5;
+        float r = 0.05 + dist * 0.0045;
+        float dots = 1.0 - smoothstep(r * 0.45, r, length(f));
+        vec2 g = abs(f) * 2.0;
+        float w = 0.025 + dist * 0.003;
         float grid = max(smoothstep(1.0 - w, 1.0, g.x), smoothstep(1.0 - w, 1.0, g.y));
-        float sweep = mod(uTime * 2.6, radius * 1.3);
-        float ring = exp(-abs(d - sweep) * 7.0) * (1.0 - sweep / (radius * 1.3));
-        float fade = exp(-dist * 0.025);
-        col += SIGNAL * (grid * 0.32 + ring * 0.22) * mask * fade;
+        float sweep = mod(uTime * 2.2, radius * 1.25);
+        float ring = exp(-abs(d - sweep) * 9.0) * (1.0 - sweep / (radius * 1.25));
+        float fade = exp(-dist * 0.03);
+        col += SIGNAL * (dots * 0.55 + grid * 0.07 + ring * 0.16) * mask * fade;
       }
     }
 
     float fog = 1.0 - exp(-dist * 0.014);
-    col = mix(col, sky(normalize(vec3(rd.x, 0.001, rd.z)), sun), fog * 0.9);
+    col = mix(col, sky(normalize(vec3(rd.x, 0.001, rd.z)), sun, 0.0), fog * 0.9);
   }
 
-  col = aces(col * 1.65);
+  col = aces(col * 1.55);
   col = pow(col, vec3(0.4545));
   vec2 v = vUv - 0.5;
   col *= 1.0 - 0.42 * dot(v, v) * 1.6;

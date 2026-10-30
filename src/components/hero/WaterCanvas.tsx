@@ -124,7 +124,7 @@ export default function WaterCanvas({ side, onStatus }: Props) {
         const t = simTime * 0.18;
         scan.tx = Math.sin(t) * 0.45 * (canvas.clientWidth / canvas.clientHeight) * 0.6;
         scan.ty = -0.22 + Math.sin(t * 1.7) * 0.06;
-        scan.ts = 0.65;
+        scan.ts = quality === "full" ? 0.7 : 0.3;
         look.tx = Math.sin(t * 0.7) * 0.25;
         look.ty = 0;
       }
